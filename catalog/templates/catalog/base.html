@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Мой Интернет-магазин{% endblock %}</title>
+</head>
+<body>
+    <div class="main-menu">
+        <ul>
+            <li><a href="/">Главная</a></li>
+            <li><a href="/products/">Товары</a></li>
+            <li><a href="/about/">О нас</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% include 'menu.html' %}
+{% block content %}
+<h1>Product List</h1>
+    {% for product in products %}
+        <div>
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description|slice:":100" }}</p>
+            <p>Price: {{ product.price }}</p>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        </div>
+    {% endfor %}
+{% endblock %}
