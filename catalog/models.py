@@ -30,3 +30,18 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
+
+
+class BlogPost(models.Model):
+    title: str = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    content = models.TextField()
+    preview = models.ImageField(upload_to='previews/')
+    created_date = models.DateTimeField(auto_now_add=True)
+    is_published = models.BooleanField(default=False)
+    views_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+
