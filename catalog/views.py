@@ -6,33 +6,33 @@ from .models import Product
 from django.urls import reverse
 
 
-def home_view(request):
+def home(request):
     return render(request, 'catalog/base.html')
 
 
-def contacts_view(request):
+def contacts(request):
     return render(request, 'catalog/contacts.html')
 
 
-def product_detail_view(request, pk):
+def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
     context = {'product': product}
     return render(request, 'catalog/product.detail.html', context)
 
 
-def index_view(request):
+def index(request):
     return render(request, 'catalog/index.html')
 
 
-def about_view(request):
+def about(request):
     return render(request, 'catalog/about.html')
 
 
-def menu_view(request):
+def menu(request):
     return render(request, 'catalog/menu.html')
 
 
-def products_view(request):
+def products(request):
     products = Product.objects.all()
     context = {'products': products}
     return render(request, 'catalog/products.html', context)
@@ -114,3 +114,6 @@ class BlogPostDeleteView(DeleteView):
     model = BlogPost
     template_name = 'blog/blogpost_confirm_delete.html'
     success_url = '/blog/'  # URL, куда перейти после удаления
+
+    def get_success_url(self):
+        return reverse('blogpost_detail', args=[self.object.pk])
