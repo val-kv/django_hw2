@@ -10,4 +10,17 @@
             <img src="{{ product.image.url }}" alt="{{ product.name }}">
         </div>
     {% endfor %}
+    <ul>
+        {% for product in object_list %}
+            <li>
+                <strong>{{ product.name }}</strong> - {{ product.description }}
+                {% if product.id in active_versions %}
+                    <p>Active Version: {{ active_versions[product.id].version_number }}
+                        - {{ active_versions[product.id].version_name }}</p>
+                {% else %}
+                    <p>No Active Version</p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>    
 {% endblock %}

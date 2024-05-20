@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Создание товара</title>
 </head>
 <body>
-
+    <h1>Создать новый товар</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Создать</button>
+    </form>
 </body>
 </html>

@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import BlogPost
-from .models import Product
+from .models import BlogPost, Product, Version
 from django.urls import reverse
+from .forms import ProductForm, VersionForm
 
 
 def home(request):
@@ -62,6 +62,21 @@ class ProductDetailView(TemplateView):
     template_name = 'catalog/product.detail.html'
 
 
+class ProductListView(ListView):
+    model = Product
+    template_name = 'products.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = Product.objects.all()
+        active_versions = {}
+        for product in products:
+            active_version = Version.objects.filter(product=product, is_current_version=True).first()
+            active_versions[product.id] = active_version
+        context['active_versions'] = active_versions
+        return context
+
+
 class BaseView(TemplateView):
     template_name = 'catalog/base.html'
 
@@ -117,3 +132,28 @@ class BlogPostDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('blogpost_detail', args=[self.object.pk])
+
+
+def create_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm()
+
+    return render(request, 'create_product.html', {'form': form})
+
+
+def create_version(request):
+    if request.method == 'POST':
+        form = VersionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(
+                'products')  # Предполагается, что после создания версии пользователь будет перенаправлен на список продуктов
+    else:
+        form = VersionForm()
+
+    return render(request, 'create_version.html', {'form': form})

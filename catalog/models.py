@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Category(models.Model):
@@ -45,3 +46,16 @@ class BlogPost(models.Model):
         return self.title
 
 
+class Version(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    version_number = models.CharField(max_length=50)
+    version_name = models.CharField(max_length=100)
+    is_current_version = models.BooleanField(default=False)
+
+    def clean(self):
+        if self.is_current_version and Version.objects.filter(product=self.product, is_current_version=True).exclude(
+                id=self.id).exists():
+            raise ValidationError('Only one version can be the current version for a product.')
+
+    def __str__(self):
+        return f"{self.product.name} - {self.version_number} ({self.version_name})"

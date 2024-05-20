@@ -2,9 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Создать версию</title>
+    <style>
+        .form-control {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-check-input {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
-
+    <h1>Создайте новую версию</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Создать</button>
+    </form>
 </body>
 </html>
