@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список постов</title>
+</head>
+<body>
+    <h1>Список постов</h1>
+    <ul>
+        {% for blogpost in blogposts %}
+            <li>
+                <h2><a href="{% url 'blogpost_detail' blogpost.pk %}">{{ blogpost.title }}</a></h2>
+                <p>{{ blogpost.created_date }}</p>
+                <p>Views: {{ blogpost.views_count }}</p>
+            </li>
+        {% empty %}
+            <li>Нет новых постов.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

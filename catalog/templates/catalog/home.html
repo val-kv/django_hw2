@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% load static %}
+
+
+{% block title %}Мой Интернет-магазин - Главная{% endblock %}
+
+{% block content %}
+    {% include 'menu.html' %}
+    <h1>Добро пожаловать в мой Интернет-магазин</h1>
+<img src="{% media_url 'image.png' %}" alt="Your Image">
+{% endblock %}
