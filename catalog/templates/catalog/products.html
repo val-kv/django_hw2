@@ -2,7 +2,22 @@
 {% include 'menu.html' %}
 {% block content %}
 <h1>Product List</h1>
-    {% for product in products %}
+
+<ul>
+    {% for product in object_list %}
+    <li>
+        <strong>{{ product.name }}</strong> - {{ product.description }}
+        {% if product.id in active_versions %}
+        <p>Active Version: {{ active_versions.product.id.version_number }} - {{
+            active_versions.product.id.version_name }}</p>
+        {% else %}
+        <p>No Active Version</p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+{% for product in products %}
         <div>
             <h2>{{ product.name }}</h2>
             <p>{{ product.description|slice:":100" }}</p>
@@ -10,17 +25,4 @@
             <img src="{{ product.image.url }}" alt="{{ product.name }}">
         </div>
     {% endfor %}
-    <ul>
-        {% for product in object_list %}
-            <li>
-                <strong>{{ product.name }}</strong> - {{ product.description }}
-                {% if product.id in active_versions %}
-                    <p>Active Version: {{ active_versions[product.id].version_number }}
-                        - {{ active_versions[product.id].version_name }}</p>
-                {% else %}
-                    <p>No Active Version</p>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>    
 {% endblock %}
