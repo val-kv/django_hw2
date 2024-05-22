@@ -33,9 +33,9 @@ def menu(request):
 
 
 def products(request):
-    products = Product.objects.all()
-    context = {'products': products}
-    return render(request, 'catalog/products.html', context)
+    product_list = Product.objects.all()
+    context = {'product_list': product_list}
+    return render(request, 'catalog/product_list.html', context)
 
 
 class ContactsView(TemplateView):
@@ -53,24 +53,30 @@ class IndexView(TemplateView):
 class AboutView(TemplateView):
     template_name = 'catalog/about.html'
 
-
-class ProductsView(TemplateView):
-    template_name = 'catalog/products.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['versions'] = Version.objects.all()
+        return context
 
 
 class ProductDetailView(TemplateView):
     template_name = 'catalog/product.detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['versions'] = Version.objects.all()
+        return context
+
 
 class ProductListView(ListView):
     model = Product
-    template_name = 'products.html'
+    template_name = 'product_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        products = Product.objects.all()
+        product_list = Product.objects.all()
         active_versions = {}
-        for product in products:
+        for product in product_list:
             active_version = Version.objects.filter(product=product, is_current_version=True).first()
             active_versions[product.id] = active_version
         context['active_versions'] = active_versions
@@ -139,7 +145,7 @@ def create_product(request):
         form = ProductForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('product_list')
+            return redirect('products')
     else:
         form = ProductForm()
 
