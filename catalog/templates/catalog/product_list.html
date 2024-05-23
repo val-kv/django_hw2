@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% include 'menu.html' %}
 {% block content %}
-<h1>Product List</h1>
+<h1>Каталог товаров</h1>
 
 <ul>
     {% for product in object_list %}
@@ -22,6 +22,7 @@
     <h2>{{ product.name }}</h2>
     <p>{{ product.description|slice:":100" }}</p>
     <p>Price: {{ product.price }}</p>
+    <p>{{ product.category }}</p>
     <img src="{{ product.image.url }}" alt="{{ product.name }}">
 </div>
 {% endfor %}

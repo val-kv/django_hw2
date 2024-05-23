@@ -145,7 +145,7 @@ def create_product(request):
         form = ProductForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('products')
+            return redirect('product_list/')
     else:
         form = ProductForm()
 
@@ -163,3 +163,7 @@ def create_version(request):
         form = VersionForm()
 
     return render(request, 'create_version.html', {'form': form})
+
+
+def create_product_done(request):
+    return render(request, 'product_list.html')

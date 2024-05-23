@@ -1,11 +1,14 @@
 from django import forms
-from .models import Product, Version
+from .models import Product, Version, Category
 
 
 class ProductForm(forms.ModelForm):
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="Категория не выбрана",
+                                      required=True)
+
     class Meta:
         model = Product
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'price', 'category']
 
     def clean_name(self):
         forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция',
@@ -37,3 +40,14 @@ class VersionForm(forms.ModelForm):
         self.fields['version_number'].widget.attrs['class'] = 'form-control'
         self.fields['version_name'].widget.attrs['class'] = 'form-control'
         self.fields['is_current_version'].widget.attrs['class'] = 'form-check-input'
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'description']
+
+    def __init__(self, *args, **kwargs):
+        super(CategoryForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['class'] = 'form-control'
+        self.fields['description'].widget.attrs['class'] = 'form-control'
