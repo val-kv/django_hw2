@@ -5,10 +5,11 @@ from .models import Product, Version, Category
 class ProductForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="Категория не выбрана",
                                       required=True)
+    image = forms.ImageField(required=False)
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'category']
+        fields = ['name', 'description', 'price', 'category', 'image']
 
     def clean_name(self):
         forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция',
