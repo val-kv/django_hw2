@@ -5,7 +5,7 @@ from .models import Product, Version, Category
 class ProductForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="Категория не выбрана",
                                       required=True)
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(blank=True, null=True)
 
     class Meta:
         model = Product
