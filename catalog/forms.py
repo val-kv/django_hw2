@@ -30,13 +30,9 @@ class VersionForm(forms.ModelForm):
     class Meta:
         model = Version
         fields = ['product', 'version_number', 'version_name', 'is_current_version']
-
-    def __init__(self, *args, **kwargs):
-        super(VersionForm, self).__init__(*args, **kwargs)
-        self.fields['product'].widget.attrs['class'] = 'form-control'
-        self.fields['version_number'].widget.attrs['class'] = 'form-control'
-        self.fields['version_name'].widget.attrs['class'] = 'form-control'
-        self.fields['is_current_version'].widget.attrs['class'] = 'form-check-input'
+        widgets = {
+            'is_current_version': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        }
 
 
 class CategoryForm(forms.ModelForm):

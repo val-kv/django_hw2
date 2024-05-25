@@ -74,12 +74,11 @@ class ProductListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product_list = Product.objects.all()
-        active_versions = {}
-        for product in product_list:
+        products = Product.objects.all()
+        for product in products:
             active_version = Version.objects.filter(product=product, is_current_version=True).first()
-            active_versions[product.id] = active_version
-        context['active_versions'] = active_versions
+            product.active_version = active_version
+        context['products'] = products
         return context
 
 
@@ -158,7 +157,7 @@ def create_version(request):
         if form.is_valid():
             form.save()
             return redirect(
-                'products')  # Предполагается, что после создания версии пользователь будет перенаправлен на список продуктов
+                'product_list')  # Предполагается, что после создания версии пользователь будет перенаправлен на список продуктов
     else:
         form = VersionForm()
 

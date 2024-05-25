@@ -1,29 +1,28 @@
 {% extends 'base.html' %}
 {% include 'menu.html' %}
 {% block content %}
-<h1>Каталог товаров</h1>
+    <h1>Каталог товаров</h1>
 
-<ul>
-    {% for product in object_list %}
-    <li>
-        <strong>{{ product.name }}</strong> - {{ product.description }}
-        {% if product.id in active_versions %}
-        <p>Active Version: {{ active_versions.product.id.version_number }} - {{
-            active_versions.product.id.version_name }}</p>
-        {% else %}
-        <p>No Active Version</p>
-        {% endif %}
-    </li>
+    {% for product in products %}
+        <div>
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            
+            <!-- Check if the product has an image associated with it -->
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <p>Нет фото для этого товара</p>
+            {% endif %}
+        </div>
     {% endfor %}
-</ul>
 
-{% for product in products %}
-<div>
-    <h2>{{ product.name }}</h2>
-    <p>{{ product.description|slice:":100" }}</p>
-    <p>Price: {{ product.price }}</p>
-    <p>{{ product.category }}</p>
-    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-</div>
-{% endfor %}
+    {% if product.active_version %}
+        <h2>Active Version</h2>
+        <p>Version Number: {{ product.active_version.version_number }}</p>
+        <p>Version Name: {{ product.active_version.version_name }}</p>
+        <p>Is Current Version: {{ product.active_version.is_current_version }}</p>
+    {% else %}
+        <p>Нет активной версии данного твоара</p>
+    {% endif %}
 {% endblock %}

@@ -1,13 +1,19 @@
-<!doctype html>
-<html lang="en">
+<!-- product_detail.html -->
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>{{ product.name }}</title>
+    <title>Product Detail</title>
 </head>
 <body>
-    <h1>{{ product.name }}</h1>
-    <p>{{ product.description }}</p>
-    <p>Price: {{ product.price }}</p>
-    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    <h1>Product Detail</h1>
+    <p>Product Name: {{ product.name }}</p>
+    <p>Product Description: {{ product.description }}</p>
+    
+    <!-- Check if there is an image associated with the product -->
+    {% if product.image %}
+         <img src="{{ product.image.url }}" alt="Product Image">
+    {% else %}
+        <p>No image available for this product.</p>
+    {% endif %}
 </body>
 </html>
