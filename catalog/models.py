@@ -46,7 +46,7 @@ class BlogPost(models.Model):
 
 
 class Version(models.Model):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     version_number = models.CharField(max_length=50)
     version_name = models.CharField(max_length=100)
     is_current_version = models.BooleanField(default=False)
