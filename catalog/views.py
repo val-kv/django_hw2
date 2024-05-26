@@ -157,7 +157,7 @@ def create_version(request):
         if form.is_valid():
             form.save()
             return redirect(
-                'product_list')  # Предполагается, что после создания версии пользователь будет перенаправлен на список продуктов
+                'create_product_done')  # Предполагается, что после создания версии пользователь будет перенаправлен на список продуктов
     else:
         form = VersionForm()
 
