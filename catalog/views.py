@@ -144,7 +144,7 @@ def create_product(request):
         form = ProductForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('product_list')  # Перенаправление на страницу списка продуктов
+            return redirect('catalog:product_list')  # Перенаправление на страницу списка продуктов
     else:
         form = ProductForm()
 
@@ -156,7 +156,7 @@ def create_version(request):
         form = VersionForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('create_product_done')  # Перенаправление на страницу списка продуктов
+            return redirect('catalog:create_product_done')  # Перенаправление на страницу списка продуктов
     else:
         form = VersionForm()
 
