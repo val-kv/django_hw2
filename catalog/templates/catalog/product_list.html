@@ -16,7 +16,11 @@
             {% endif %}
         </div>
     {% endfor %}
-
+    
+    {% for product in products_with_active_version %}
+        <p>Active Version: {{ product.active_version_name }}</p>
+    {% endfor %}
+    
     {% if product.active_version %}
         <h2>Active Version</h2>
         <p>Version Number: {{ product.active_version.version_number }}</p>
