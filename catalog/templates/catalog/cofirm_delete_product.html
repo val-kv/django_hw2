@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Подтверждение удаления продукта</title>
 </head>
 <body>
-
+    <h1>Вы уверены, что хотите удалить "{{ product.name }}"?</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+    </form>
 </body>
 </html>
