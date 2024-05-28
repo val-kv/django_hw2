@@ -14,19 +14,16 @@
             {% else %}
                 <p>Нет фото для этого товара</p>
             {% endif %}
+            
+            <p>Версия товара: {{ product.active_version_name }}</p>
+        
+            {% if product.active_version %}
+                <h2>Версия товара</h2>
+                <p>Version Number: {{ product.active_version.version_number }}</p>
+                <p>Version Name: {{ product.active_version_name }}</p>
+                <p>Is Current Version: {{ product.active_version.is_active }}</p>
+            {% endif %}
         </div>
     {% endfor %}
-    
-    {% for product in products_with_active_version %}
-        <p>Active Version: {{ product.active_version_name }}</p>
-    {% endfor %}
-    
-    {% if product.active_version %}
-        <h2>Active Version</h2>
-        <p>Version Number: {{ product.active_version.version_number }}</p>
-        <p>Version Name: {{ product.active_version.version_name }}</p>
-        <p>Is Current Version: {{ product.active_version.is_current_version }}</p>
-    {% else %}
-        <p>Нет активной версии данного твоара</p>
-    {% endif %}
 {% endblock %}
+
