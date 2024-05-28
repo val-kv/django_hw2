@@ -23,6 +23,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    active_version_name = models.CharField(max_length=50, default="No active version")
 
     def __str__(self):
         return self.name
@@ -49,10 +50,10 @@ class Version(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     version_number = models.CharField(max_length=50)
     version_name = models.CharField(max_length=100)
-    is_current_version = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
 
     def clean(self):
-        if self.is_current_version and Version.objects.filter(product=self.product, is_current_version=True).exclude(
+        if self.is_active and Version.objects.filter(product=self.product, is_current_version=True).exclude(
                 id=self.id).exists():
             raise ValidationError('Only one version can be the current version for a product.')
 

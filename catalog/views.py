@@ -1,14 +1,7 @@
-from multiprocessing import Value
-
-from django.db.models import When
-from django.db.models.functions import Concat
-from django.forms import CharField
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from sqlparse.sql import Case
 
-from . import models
 from .models import BlogPost, Product, Version
 from django.urls import reverse
 from .forms import ProductForm, VersionForm
@@ -76,12 +69,21 @@ class ProductDetailView(TemplateView):
         return context
 
 
-class ProductListView(TemplateView):
+class ProductListView(ListView):
+    model = Product
     template_name = 'catalog/product_list.html'
+    context_object_name = 'products'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
+        products = Product.objects.all()
+
+        for product in products:
+            versions = Version.objects.filter(product=product)
+            active_version = versions.filter(is_active=True).first()
+            product.active_version_name = active_version.version_name if active_version else "No active version"
+
+        context['products'] = products
         return context
 
 
@@ -167,6 +169,7 @@ def create_version(request):
         form = VersionForm()
 
     return render(request, 'create_version.html', {'form': form})
+
 
 def create_product_done(request):
     return render(request, 'product_list.html')

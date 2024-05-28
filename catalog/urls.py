@@ -2,8 +2,7 @@ from django.urls import path
 
 from catalog import views
 from catalog.views import ContactsView, HomeView, ProductDetailView, IndexView, AboutView, MenuView, \
-    BlogPostListView, BlogPostDetailView, BlogPostCreateView, BlogPostUpdateView, BlogPostDeleteView, create_product, \
-    create_version, ProductListView, create_product_done
+    BlogPostListView, BlogPostDetailView, BlogPostCreateView, BlogPostUpdateView, BlogPostDeleteView, create_product, ProductListView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
