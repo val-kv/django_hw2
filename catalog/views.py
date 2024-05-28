@@ -1,6 +1,14 @@
-from django.shortcuts import render, redirect
+from multiprocessing import Value
+
+from django.db.models import When
+from django.db.models.functions import Concat
+from django.forms import CharField
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from sqlparse.sql import Case
+
+from . import models
 from .models import BlogPost, Product, Version
 from django.urls import reverse
 from .forms import ProductForm, VersionForm
@@ -68,17 +76,12 @@ class ProductDetailView(TemplateView):
         return context
 
 
-class ProductListView(ListView):
-    model = Product
-    template_name = 'product_list.html'
+class ProductListView(TemplateView):
+    template_name = 'catalog/product_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        products = Product.objects.all()
-        for product in products:
-            active_version = Version.objects.filter(product=product, is_current_version=True).first()
-            product.active_version = active_version
-        context['products'] = products
+        context['products'] = Product.objects.all()
         return context
 
 
@@ -155,13 +158,40 @@ def create_version(request):
     if request.method == 'POST':
         form = VersionForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_version = form.save(commit=False)  # Создание объекта версии без сохранения в базу данных
+            # Установка флага is_active в зависимости от логики активации версий
+            new_version.is_active = True  # устанавливаем активной только что созданную версию
+            new_version.save()  # Сохранение версии
             return redirect('catalog:create_product_done')  # Перенаправление на страницу списка продуктов
     else:
         form = VersionForm()
 
     return render(request, 'create_version.html', {'form': form})
 
-
 def create_product_done(request):
     return render(request, 'product_list.html')
+
+
+def update_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product_detail',
+                            product_id=product_id)
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'update_product.html', {'form': form, 'product': product})
+
+
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        product.delete()
+        return redirect('product_list')  # Предположим, что 'product_list' - это URL для списка продуктов
+
+    return render(request, 'confirm_delete_product.html', {'product': product})

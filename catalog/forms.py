@@ -27,6 +27,11 @@ class ProductForm(StyledFormMixin, forms.ModelForm):
         model = Product
         fields = ['name', 'description', 'price', 'category', 'image']
 
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
     def clean_name(self):
         forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция',
                            'радар']
@@ -47,12 +52,21 @@ class ProductForm(StyledFormMixin, forms.ModelForm):
 
 
 class VersionForm(StyledFormMixin, forms.ModelForm):
+    is_active = forms.BooleanField(label='Is Active', required=False)  # Добавляем поле is_active
+
     class Meta:
         model = Version
-        fields = ['product', 'version_number', 'version_name', 'is_current_version']
+        fields = ['product', 'version_number', 'version_name',
+                  'is_active']  # Заменяем поле is_current_version на is_active
         widgets = {
-            'is_current_version': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
+
+    def __init__(self, *args, **kwargs):
+        super(VersionForm, self).__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
 
 
 class CategoryForm(StyledFormMixin, forms.ModelForm):
