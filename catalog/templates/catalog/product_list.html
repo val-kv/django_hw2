@@ -2,28 +2,32 @@
 {% include 'menu.html' %}
 {% block content %}
     <h1>Каталог товаров</h1>
-
+    <br>
     {% for product in products %}
-        <div>
-            <h2>{{ product.name }}</h2>
-            <p>{{ product.description }}</p>
-            
-            <!-- Check if the product has an image associated with it -->
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <p>Нет фото для этого товара</p>
-            {% endif %}
-            
-            <p>Версия товара: {{ product.active_version_name }}</p>
-        
-            {% if product.active_version %}
-                <h2>Версия товара</h2>
-                <p>Version Number: {{ product.active_version.version_number }}</p>
-                <p>Version Name: {{ product.active_version_name }}</p>
-                <p>Is Current Version: {{ product.active_version.is_active }}</p>
-            {% endif %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card h-100">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <p> Нет фото для этого товара </p>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">Описание: <br>{{ product.description }}</p>
+                        <p>Версия товара: <br> {{ product.active_version_name }}</p>
+                    
+                        {% if product.active_version %}
+                            <h2>Версия товара</h2>
+                            <p>Version Number: {{ product.active_version.version_number }}</p>
+                            <p>Version Name: {{ product.active_version_name }}</p>
+                            <p>Is Current Version: {{ product.active_version.is_active }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
+        <div>
     {% endfor %}
 {% endblock %}
 
