@@ -1,9 +1,12 @@
+from urllib import request
+
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .models import BlogPost, Product, Version
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .forms import ProductForm, VersionForm
 
 
@@ -61,11 +64,14 @@ class AboutView(TemplateView):
 
 
 class ProductDetailView(TemplateView):
+    model = Product
     template_name = 'catalog/product.detail.html'
+    context_object_name = 'product'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['versions'] = Version.objects.all()
+
         return context
 
 
@@ -175,6 +181,15 @@ def create_product_done(request):
     return render(request, 'product_list.html')
 
 
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ['name', 'description', 'price', 'category', 'image']  # Поля, которые можно обновить
+    template_name = 'catalog/update_product.html'
+
+    def get_success_url(self):
+        return reverse('catalog:product_detail', args=[self.object.pk])
+
+
 def update_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
@@ -190,11 +205,19 @@ def update_product(request, product_id):
     return render(request, 'update_product.html', {'form': form, 'product': product})
 
 
-def delete_product(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('/product_list/')
 
-    if request.method == 'POST':
-        product.delete()
-        return redirect('product_list')  # Предположим, что 'product_list' - это URL для списка продуктов
+    def get_success_url(self):
+        return reverse('catalog:product_list')
 
-    return render(request, 'confirm_delete_product.html', {'product': product})
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        product = self.get_object()
+        return render(request, 'product_confirm_delete.html', {'product': product})
