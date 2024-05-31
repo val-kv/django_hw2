@@ -1,7 +1,4 @@
-from urllib import request
-
-from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -21,7 +18,7 @@ def contacts(request):
 def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
     context = {'product': product}
-    return render(request, 'catalog/product.detail.html', context)
+    return render(request, 'catalog/templates/blog/product.detail.html', context)
 
 
 def index(request):
@@ -65,7 +62,7 @@ class AboutView(TemplateView):
 
 class ProductDetailView(TemplateView):
     model = Product
-    template_name = 'catalog/product.detail.html'
+    template_name = 'catalog/templates/blog/product.detail.html'
     context_object_name = 'product'
 
     def get_context_data(self, **kwargs):
@@ -77,7 +74,7 @@ class ProductDetailView(TemplateView):
 
 class ProductListView(ListView):
     model = Product
-    template_name = 'catalog/product_list.html'
+    template_name = 'product_list.html'
     context_object_name = 'products'
 
     def get_context_data(self, **kwargs):
@@ -184,40 +181,11 @@ def create_product_done(request):
 class ProductUpdateView(UpdateView):
     model = Product
     fields = ['name', 'description', 'price', 'category', 'image']  # Поля, которые можно обновить
-    template_name = 'catalog/update_product.html'
-
-    def get_success_url(self):
-        return reverse('catalog:product_detail', args=[self.object.pk])
-
-
-def update_product(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
-
-    if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('product_detail',
-                            product_id=product_id)
-    else:
-        form = ProductForm(instance=product)
-
-    return render(request, 'update_product.html', {'form': form, 'product': product})
+    template_name = 'catalog/product_update.html'
+    success_url = reverse_lazy('catalog:product_list')
 
 
 class ProductDeleteView(DeleteView):
     model = Product
-    success_url = reverse_lazy('/product_list/')
-
-    def get_success_url(self):
-        return reverse('catalog:product_list')
-
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.delete(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        product = self.get_object()
-        return render(request, 'product_confirm_delete.html', {'product': product})
+    template_name = 'catalog/product_delete.html'
+    success_url = reverse_lazy('catalog:product_list')

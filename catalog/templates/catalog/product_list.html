@@ -7,16 +7,16 @@
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col">
                 <div class="card h-100">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <p> Нет фото для этого товара </p>
-                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }} Image">
+                        {% else %}
+                            <p>Изображение отсутствует</p>
+                        {% endif %}
                         <p class="card-text">Описание: <br>{{ product.description }}</p>
+                        <p class="card-price">Цена: {{ product.price }} </p>
                         <p>Версия товара: <br> {{ product.active_version_name }}</p>
-                    
                         {% if product.active_version %}
                             <h2>Версия товара</h2>
                             <p>Version Number: {{ product.active_version.version_number }}</p>

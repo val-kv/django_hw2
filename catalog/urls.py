@@ -4,6 +4,8 @@ from catalog import views
 from catalog.views import ContactsView, HomeView, ProductDetailView, IndexView, AboutView, MenuView, \
     BlogPostListView, BlogPostDetailView, BlogPostCreateView, BlogPostUpdateView, BlogPostDeleteView, create_product, \
     ProductListView, ProductUpdateView, ProductDeleteView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -21,6 +23,9 @@ urlpatterns = [
     path('create_product/', create_product, name='create_product'),
     path('create_version/', views.create_version, name='create_version'),
     path('create_product_done/', views.create_product_done, name='create_product_done'),
-    path('product/<int:product_id>/update/', ProductUpdateView.as_view(), name='update_product'),
+    path('product/<int:pk>/update/', ProductUpdateView.as_view(), name='product_update'),
     path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
