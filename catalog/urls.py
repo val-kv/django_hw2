@@ -7,6 +7,8 @@ from catalog.views import ContactsView, HomeView, ProductDetailView, IndexView, 
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'catalog'
+
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('contacts/', ContactsView.as_view(), name='contacts'),
