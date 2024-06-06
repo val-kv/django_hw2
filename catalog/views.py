@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-
 from .models import BlogPost, Product, Version
 from django.urls import reverse, reverse_lazy
 from .forms import ProductForm, VersionForm
+from django.http import HttpResponseForbidden
 
 
 def home(request):
@@ -18,7 +18,7 @@ def contacts(request):
 def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
     context = {'product': product}
-    return render(request, 'catalog/templates/blog/product.detail.html', context)
+    return render(request, 'catalog/templates/catalog/product.detail.html', context)
 
 
 def index(request):
@@ -62,7 +62,7 @@ class AboutView(TemplateView):
 
 class ProductDetailView(TemplateView):
     model = Product
-    template_name = 'catalog/templates/blog/product.detail.html'
+    template_name = 'catalog/templates/catalog/product.detail.html'
     context_object_name = 'product'
 
     def get_context_data(self, **kwargs):
@@ -189,3 +189,13 @@ class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'catalog/product_delete.html'
     success_url = reverse_lazy('catalog:product_list')
+
+
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.user == product.owner:
+
+        return render(request, 'edit_product.html', {'product': product})
+    else:
+        return HttpResponseForbidden("Вы не администратор. Редактирование запрещено")

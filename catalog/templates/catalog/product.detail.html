@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Product Detail</title>
+    <title>{{ product.name }}</title>
 </head>
 <body>
     <h1>Детальная карточка товара</h1>
-    <p>Product Name: {{ product.name }}</p>
-    <p>Product Description: {{ product.description }}</p>
-    <p>Price: {{ product.price }}</p>
+    <p>Название: {{ product.name }}</p>
+    <p>Описание: {{ product.description }}</p>
+    <p>Цена: {{ product.price }}</p>
+    
+    {% if product.owner == request.user %}
+        <a href="{% url 'edit_product' product.id %}">Edit Product</a>
+    {% endif %}
     
     <!-- Check if there is an image associated with the product -->
     {% if product.image %}
          <img src="{{ product.image.url }}" alt="Product Image">
     {% else %}
-        <p>No image available for this product.</p>
+        <p>Нет изображения этого товара</p>
     {% endif %}
 
     <form method="post" action="{% url 'catalog:product_delete' pk=product.pk %}">

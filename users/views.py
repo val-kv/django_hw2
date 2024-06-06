@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib.auth.views import FormView
 from django.views.generic import CreateView
-
 from catalog.models import Product
 from .forms import RegistrationForm
 from django.contrib.auth.views import LoginView

@@ -34,6 +34,12 @@ class Product(models.Model):
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
 
+        permissions = [
+            ('cancel_product_publication', 'Can cancel product publication'),
+            ('change_product_description', 'Can change product description'),
+            ('change_product_category', 'Can change product category'),
+        ]
+
 
 class BlogPost(models.Model):
     title: str = models.CharField(max_length=100)
