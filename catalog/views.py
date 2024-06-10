@@ -1,3 +1,4 @@
+import method_decorator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -5,7 +6,8 @@ from .models import BlogPost, Product, Version
 from django.urls import reverse, reverse_lazy
 from .forms import ProductForm, VersionForm
 from django.http import HttpResponseForbidden
-
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 def home(request):
     return render(request, 'catalog/base.html')
@@ -183,6 +185,15 @@ class ProductUpdateView(UpdateView):
     fields = ['name', 'description', 'price', 'category', 'image']  # Поля, которые можно обновить
     template_name = 'catalog/product_update.html'
     success_url = reverse_lazy('catalog:product_list')
+
+    def test_func(self):
+        user = self.request.user
+        product = self.get_object()
+        return user.is_staff or user.groups.filter(name='moderators').exists() or product.user == user
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ProductDeleteView(DeleteView):
