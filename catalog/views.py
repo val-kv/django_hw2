@@ -4,10 +4,13 @@ from django.template.defaultfilters import slugify
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import BlogPost, Product, Version
 from django.urls import reverse, reverse_lazy
-from .forms import ProductForm, VersionForm
+from .forms import ProductForm, VersionForm, CustomModeratorForm, CustomOwnerForm
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic.edit import UpdateView
+
 
 def home(request):
     return render(request, 'catalog/base.html')
@@ -180,9 +183,11 @@ def create_product_done(request):
     return render(request, 'product_list.html')
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = ['name', 'description', 'price', 'category', 'image']  # Поля, которые можно обновить
+    fields_owner = ['name', 'description', 'price', 'category', 'image']
+    fields_moderator = ['name', 'description', 'price', 'category']
+
     template_name = 'catalog/product_update.html'
     success_url = reverse_lazy('catalog:product_list')
 
@@ -190,6 +195,14 @@ class ProductUpdateView(UpdateView):
         user = self.request.user
         product = self.get_object()
         return user.is_staff or user.groups.filter(name='moderators').exists() or product.user == user
+
+    def get_form_class(self):
+        if self.request.user.is_staff:
+            return super().get_form_class()
+        elif self.request.user.groups.filter(name='moderators').exists():
+            return CustomModeratorForm
+        else:
+            return CustomOwnerForm
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):

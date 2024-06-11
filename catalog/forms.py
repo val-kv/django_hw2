@@ -1,6 +1,4 @@
 from django import forms
-
-from . import models
 from .models import Product, Version, Category
 from crispy_forms.helper import FormHelper
 
@@ -85,3 +83,15 @@ class FormsetHelper:
         super(FormsetHelper, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+
+class CustomModeratorForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'category']
+
+
+class CustomOwnerForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'category', 'image']
