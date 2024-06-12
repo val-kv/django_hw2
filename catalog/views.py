@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import UpdateView
+from django.views.decorators.cache import cache_page
+
+from .services import get_cached_categories
 
 
 def home(request):
@@ -19,10 +22,11 @@ def contacts(request):
     return render(request, 'catalog/contacts.html')
 
 
+@cache_page(60 * 15)
 def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
-    context = {'product': product}
-    return render(request, 'catalog/templates/catalog/product.detail.html', context)
+    categories = get_cached_categories()
+    return render(request, 'product.detail.html', {'product': product, 'categories': categories})
 
 
 def index(request):

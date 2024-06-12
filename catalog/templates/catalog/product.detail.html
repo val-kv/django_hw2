@@ -9,6 +9,13 @@
     <p>Описание: {{ product.description }}</p>
     <p>Цена: {{ product.price }}</p>
     
+    <h2>Categories:</h2>
+    <ul>
+        {% for category in categories %}
+            <li>{{ category.name }}</li>
+        {% endfor %}
+    </ul>
+    
     {% if product.owner == request.user %}
         <a href="{% url 'edit_product' product.id %}">Edit Product</a>
     {% endif %}

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 from django.conf import settings
 from django.template.context_processors import static
@@ -22,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6mfbr0uolqrq=*2b0e@voa8b2(2f1$q%g+k9kv50a^6^7z2#o*'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 ALLOWED_HOSTS = []
 
@@ -132,14 +133,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 settings.AUTH_USER_MODEL = 'users.CustomUser'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
-EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'val-kv2008@yandex.ru'  # Ваша почта
-EMAIL_HOST_PASSWORD = 'spgebfjbaufpmnxe'  # Ваш пароль
+# Загрузка переменных окружения
+load_dotenv()
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_ADMIN = EMAIL_HOST_USER
+# Использование секретного ключа из переменных окружения
+SECRET_KEY = os.getenv('SECRET_KEY')
