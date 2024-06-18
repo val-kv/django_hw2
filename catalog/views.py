@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from .models import BlogPost, Product, Version
 from django.urls import reverse, reverse_lazy
 from .forms import ProductForm, VersionForm, CustomModeratorForm, CustomOwnerForm
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -22,11 +22,17 @@ def contacts(request):
     return render(request, 'catalog/contacts.html')
 
 
-@cache_page(60 * 15)
+@cache_page(300)
 def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
     categories = get_cached_categories()
-    return render(request, 'product.detail.html', {'product': product, 'categories': categories})
+    product_data = {
+        'id': pk,
+        'name': product.name,
+        'price': product.price,
+        'categories': categories
+    }
+    return JsonResponse(product_data)
 
 
 def index(request):
@@ -172,7 +178,7 @@ def create_version(request):
         form = VersionForm(request.POST)
         if form.is_valid():
             new_version = form.save(commit=False)  # Создание объекта версии без сохранения в базу данных
-            # Установка флага is_active в зависимости от логики активации версий
+            # Установка флага is_active
             new_version.is_active = True  # устанавливаем активной только что созданную версию
             new_version.save()  # Сохранение версии
             return redirect('catalog:create_product_done')  # Перенаправление на страницу списка продуктов
