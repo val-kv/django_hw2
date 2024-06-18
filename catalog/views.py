@@ -24,15 +24,8 @@ def contacts(request):
 
 @cache_page(300)
 def product_detail(request, pk):
-    product = Product.objects.get(pk=pk)
-    categories = get_cached_categories()
-    product_data = {
-        'id': pk,
-        'name': product.name,
-        'price': product.price,
-        'categories': categories
-    }
-    return JsonResponse(product_data)
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'catalog/product.detail.html', {'product': product})
 
 
 def index(request):
